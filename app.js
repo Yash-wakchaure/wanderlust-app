@@ -7,8 +7,10 @@ const methodOverride= require("method-override");
 const ejsmate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressErrors.js");
+const { listingSchema } = require("./schema.js");
 
 const MONGO_URL= "mongodb://127.0.0.1:27017/wanderlust";
+
 async function main() {
    await mongoose.connect(MONGO_URL);
 }
@@ -30,6 +32,16 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.get("/", (req, res) => {
    res.send("Hi- I am root");
 });
+
+const validateListing = (req, res, next) => {
+    let { error } = listingSchema.validate(req.body);
+    let errMsg = error.details.map((el) => el.message).join(",");
+    if(error){
+        throw new ExpressError(400, error);
+    }else{
+        next();
+    }
+};
 
 // app.get("/testListing", async (req, res)=>{
 //    let sampleListing = new Listing ({
@@ -64,7 +76,7 @@ app.get("/listings/:id", wrapAsync(async (req, res) =>{
 }));
 
 // create  rout 
-app.post("/listings", wrapAsync(async(req, res, next)=>{
+app.post("/listings", validateListing , wrapAsync(async(req, res, next)=>{
       // let {title, description, image, price, location, country} = req.body; 
     // let newListing = new Listing({
     //   title:title,
@@ -74,10 +86,7 @@ app.post("/listings", wrapAsync(async(req, res, next)=>{
     //    location:location,
     //    country:country
     // });
-    if(!req.body.listing){
-        throw new ExpressError(400,"send valid data for listing");
-    }
-    const newListing = new Listing(req.body.listing);
+    const newListing = new Listing(req.body.listing);    
     await newListing.save();
     res.redirect("/listings");
    
@@ -91,10 +100,7 @@ app.get("/listings/:id/edit", wrapAsync(async(req, res)=>{
 }));
 
 // update rout 
-app.put("/listings/:id", wrapAsync(async (req, res) => {
-    if(!req.body.listing){
-        throw new ExpressError(400,"send valid data for listing");
-    }
+app.put("/listings/:id", validateListing , wrapAsync(async (req, res) => {
   let { id } = req.params;
   await Listing.findByIdAndUpdate(id, { ...req.body.listing });
     res.redirect(`/listings/${id}`);
