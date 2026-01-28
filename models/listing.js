@@ -32,7 +32,7 @@ const listingSchema = new Schema({
         type:String,
         enum:["Trending", "Room", "Iconic cities", "Mountains","Natures", 
             "Castles", "Amazing Pools", "Camping", "Farms", 
-            "Arctic", "Domes", "Boats"]
+            "Arctic", "Boats"]
     }
   //   geometry: {
   //   type: {
