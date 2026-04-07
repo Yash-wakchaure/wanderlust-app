@@ -33,6 +33,6 @@ router.route("/login")
 //         failureFlash:true 
 // }),  userController.login);
 
-router.get("/logout", wrapAsync(userController.logout));
+router.get("/logout", userController.logout);
 
 module.exports = router;
