@@ -104,6 +104,10 @@ app.use((req, res, next) =>{
 // });
 
 // Routes
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
+
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 const contactRouter = require("./routes/contact.js");
@@ -128,7 +132,9 @@ app.use((err, req, res, next) => {
     // res.status(statusCode).send(message);s
 })
 
-app.listen(8080, () =>{
-    console.log("server is listening to port 8080");
+const port = process.env.PORT || 8080;
+
+app.listen(port, () =>{
+    console.log(`server is listening to port ${port}`);
 });
 
