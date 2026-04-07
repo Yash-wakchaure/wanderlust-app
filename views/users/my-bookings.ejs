@@ -1,0 +1,171 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .bookings-page {
+        background: linear-gradient(135deg, #eef2ff 0%, #f8f3ff 100%);
+        padding: 3rem 0;
+    }
+
+    .bookings-wrapper {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+        padding: 2rem;
+    }
+
+    .bookings-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.4px;
+    }
+
+    .booking-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 18px 35px rgba(102, 126, 234, 0.12);
+    }
+
+    .booking-card img {
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .booking-card-body {
+        padding: 1.8rem;
+    }
+
+    .booking-card h5 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+    }
+
+    .booking-details {
+        line-height: 1.8;
+        color: #4f4f4f;
+        margin-bottom: 1.2rem;
+    }
+
+    .booking-details strong {
+        color: #667eea;
+    }
+
+    .badge-status {
+        font-size: 0.9rem;
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+    }
+
+    .booking-actions {
+        margin-top: 1.5rem;
+    }
+
+    .btn-cancel-booking {
+        background: #ff6b6b;
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 0.8rem 1.1rem;
+        transition: all 0.25s ease;
+    }
+
+    .btn-cancel-booking:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 25px rgba(255,107,107,0.25);
+    }
+
+    .bookings-empty {
+        background: #f4f5ff;
+        border-left: 6px solid #667eea;
+        padding: 1.5rem;
+        border-radius: 14px;
+        color: #333;
+        margin-bottom: 1.5rem;
+    }
+
+    .bookings-bottom {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1.5rem;
+    }
+
+    .btn-back-listings {
+        background: #667eea;
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 0.85rem 1.4rem;
+    }
+
+    .btn-back-listings:hover {
+        background: #5367d6;
+    }
+</style>
+
+<div class="bookings-page">
+    <div class="container">
+        <div class="bookings-wrapper">
+            <h1 class="bookings-title">My Bookings</h1>
+
+            <% if(bookings.length > 0) { %>
+                <div class="row gy-4">
+                    <% bookings.forEach(booking => { %>
+                        <div class="col-lg-6">
+                            <div class="card booking-card">
+                                <% if(booking.listing.image) { %>
+                                    <img src="<%= booking.listing.image.url %>" class="card-img-top" alt="<%= booking.listing.title %>">
+                                <% } %>
+                                <div class="booking-card-body">
+                                    <h5>
+                                        <a href="/listings/<%= booking.listing._id %>" class="text-decoration-none text-dark">
+                                            <%= booking.listing.title %>
+                                        </a>
+                                    </h5>
+
+                                    <div class="booking-details">
+                                        <div><strong>Check-In:</strong> <%= new Date(booking.checkInDate).toLocaleDateString('en-IN') %></div>
+                                        <div><strong>Check-Out:</strong> <%= new Date(booking.checkOutDate).toLocaleDateString('en-IN') %></div>
+                                        <div><strong>Guests:</strong> <%= booking.numberOfGuests %></div>
+                                        <div><strong>Total Price:</strong> ₹<%= booking.totalPrice.toLocaleString('en-IN') %></div>
+                                    </div>
+
+                                    <% const checkOut = new Date(booking.checkOutDate);
+                                       const today = new Date();
+                                       const isPastBooking = checkOut < today; %>
+                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                        <% if(isPastBooking) { %>
+                                            <span class="badge badge-status bg-secondary">Completed</span>
+                                        <% } else { %>
+                                            <span class="badge badge-status bg-success">Upcoming</span>
+                                        <% } %>
+                                    </div>
+
+                                    <% if(!isPastBooking) { %>
+                                        <div class="booking-actions">
+                                            <form method="POST" action="/listings/<%= booking.listing._id %>/bookings/<%= booking._id %>?_method=DELETE">
+                                                <button type="submit" class="btn-cancel-booking" onclick="return confirm('Cancel this booking?')">Cancel Booking</button>
+                                            </form>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="bookings-empty">
+                    <p class="mb-0">You haven't booked any properties yet. <a href="/listings" class="fw-bold text-decoration-none">Browse listings</a> to make your first booking!</p>
+                </div>
+            <% } %>
+
+            <div class="bookings-bottom">
+                <a href="/listings" class="btn-back-listings">Back to Listings</a>
+            </div>
+        </div>
+    </div>
+</div>

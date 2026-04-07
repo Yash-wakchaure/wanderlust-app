@@ -19,6 +19,7 @@ const User = require("./models/user.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+const bookingRouter = require("./routes/booking.js");
 // const router = require('./routes/listing.js');
 
 let store;
@@ -105,6 +106,9 @@ app.use((req, res, next) =>{
 // Routes
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
+const contactRouter = require("./routes/contact.js");
+app.use("/", contactRouter);
+app.use("/", bookingRouter);
 app.use("/", userRouter);
 
 // ERROR Handler middleware

@@ -12,8 +12,11 @@
         </div>
 
         <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea type="text" name="listing[description]" placeholder="enter description" class="form-control" required></textarea>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <label for="description" class="form-label">Description</label>
+                <button type="button" class="btn btn-sm btn-info" id="generateDescBtn">✨ AI Generate</button>
+            </div>
+            <textarea type="text" name="listing[description]" id="description" placeholder="enter description" class="form-control" required></textarea>
             <div class="invalid-feedback">Pleace add a description </div>
         </div>
 
@@ -63,6 +66,62 @@
          <button class="btn btn-dark add-btn mt-3">Add</button>
          <br><br>
     </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // AI Description Generator - Pre-written templates
+            const descriptionTemplates = [
+                "Welcome to this stunning property! This beautifully designed space offers comfort and modern amenities. Perfect for travelers seeking a memorable getaway with all the conveniences of home. Enjoy breathtaking views and exceptional hospitality.",
+                
+                "Experience luxury and elegance in this exquisite retreat. Featuring spacious rooms, world-class facilities, and personalized service. Ideal for families, couples, or solo travelers looking for an unforgettable vacation experience.",
+                
+                "Discover your ideal escape in this charming property! Located in a prime destination with easy access to major attractions. Our thoughtfully curated space combines modern comfort with traditional warmth for an authentic experience.",
+                
+                "A hidden gem awaits you! This property boasts unique character, stunning architecture, and premium amenities. Whether you're here for relaxation or adventure, find everything you need for an incredible stay.",
+                
+                "Welcome home! This inviting space is designed with your comfort in mind. From cozy interiors to spectacular views, every detail creates the perfect atmosphere for rest and rejuvenation. Your ideal vacation starts here.",
+                
+                "Indulge in luxury and tranquility at this exceptional property. With upscale amenities, elegant decor, and prime location, it's the ultimate destination for travelers who appreciate the finer things in life.",
+                
+                "Experience authentic charm in this beautifully restored property. Blend of modern conveniences with rustic elegance provides the perfect backdrop for unforgettable memories. Ideal for travelers seeking genuine local experience.",
+                
+                "Your adventure awaits at this remarkable location! This property offers the perfect base for exploring incredible sights and attractions. Comfortable rooms and friendly service ensure a wonderful stay every time.",
+                
+                "Escape to paradise in this serene and picturesque property. Surrounded by natural beauty with contemporary comforts, it's the perfect sanctuary for those seeking peace and rejuvenation away from the hustle and bustle.",
+                
+                "Step into elegance and sophistication! This premium property features high-end furnishings, state-of-the-art facilities, and impeccable service. Perfect for discerning travelers who demand excellence in every aspect of their stay."
+            ];
+
+            const generateDescBtn = document.getElementById('generateDescBtn');
+            const descriptionField = document.getElementById('description');
+
+            // Check if elements exist before adding event listener
+            if (generateDescBtn && descriptionField) {
+                generateDescBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get random template
+                    const randomIndex = Math.floor(Math.random() * descriptionTemplates.length);
+                    const randomDescription = descriptionTemplates[randomIndex];
+                    
+                    // Set description
+                    descriptionField.value = randomDescription;
+                    
+                    // Add visual feedback
+                    generateDescBtn.innerHTML = '✓ Description Generated!';
+                    generateDescBtn.classList.add('btn-success');
+                    generateDescBtn.classList.remove('btn-info');
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        generateDescBtn.innerHTML = '✨ AI Generate';
+                        generateDescBtn.classList.remove('btn-success');
+                        generateDescBtn.classList.add('btn-info');
+                    }, 2000);
+                });
+            }
+        });
+    </script>
 </body>
 </div>
 </div>

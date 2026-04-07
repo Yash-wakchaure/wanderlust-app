@@ -1,0 +1,228 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .booking-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem 0;
+        border-radius: 10px;
+        margin-top: 2rem;
+    }
+
+    .booking-card {
+        border-radius: 15px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+        border: none;
+        background: white;
+    }
+
+    .booking-title {
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid #667eea;
+    }
+
+    .listing-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+
+    .info-item {
+        margin-bottom: 0.8rem;
+        font-size: 1rem;
+    }
+
+    .info-item strong {
+        color: #667eea;
+    }
+
+    .form-group {
+        margin-bottom: 1.8rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.7rem;
+        display: block;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        padding: 0.8rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .price-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 2rem 0;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .price-summary strong {
+        font-size: 1.1rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .price-amount {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-confirm {
+        flex: 1;
+        padding: 0.9rem 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-confirm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-cancel {
+        flex: 1;
+        padding: 0.9rem 1.5rem;
+        background: #e0e0e0;
+        border: none;
+        color: #2c3e50;
+        font-weight: 600;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-cancel:hover {
+        background: #d0d0d0;
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="booking-container">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            <h1 class="booking-title">Book <%= listing.title %></h1>
+            
+            <div class="card booking-card">
+                <div class="card-body p-4">
+                    <!-- Listing Info Section -->
+                    <div class="listing-info">
+                        <div class="info-item">
+                            <strong>💰 Price:</strong> ₹<%= listing.price.toLocaleString("en-IN") %>/night
+                        </div>
+                        <div class="info-item">
+                            <strong>📍 Location:</strong> <%= listing.location %>, <%= listing.country %>
+                        </div>
+                    </div>
+
+                    <!-- Booking Form -->
+                    <form action="/listings/<%= listing._id %>/book" method="POST">
+                        <div class="form-group">
+                            <label for="checkInDate" class="form-label">📅 Check-In Date</label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                id="checkInDate" 
+                                name="checkInDate"
+                                min="<%= new Date().toISOString().split('T')[0] %>"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="checkOutDate" class="form-label">📅 Check-Out Date</label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                id="checkOutDate" 
+                                name="checkOutDate"
+                                min="<%= new Date().toISOString().split('T')[0] %>"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="numberOfGuests" class="form-label">👥 Number of Guests</label>
+                            <input 
+                                type="number" 
+                                class="form-control" 
+                                id="numberOfGuests" 
+                                name="numberOfGuests"
+                                min="1" 
+                                value="1" 
+                                required>
+                        </div>
+
+                        <!-- Price Summary -->
+                        <div class="price-summary">
+                            <strong>Total Price</strong>
+                            <div class="price-amount" id="totalPrice">₹0</div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="button-group">
+                            <button type="submit" class="btn-confirm">✓ Confirm Booking</button>
+                            <a href="/listings/<%= listing._id %>" class="btn-cancel">✕ Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pricePerNight = <%= listing.price %>;
+        const checkInInput = document.getElementById('checkInDate');
+        const checkOutInput = document.getElementById('checkOutDate');
+        const totalPriceDisplay = document.getElementById('totalPrice');
+
+        function calculatePrice() {
+            if (checkInInput.value && checkOutInput.value) {
+                const checkIn = new Date(checkInInput.value);
+                const checkOut = new Date(checkOutInput.value);
+                const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+                
+                if (nights > 0) {
+                    const totalPrice = nights * pricePerNight;
+                    totalPriceDisplay.textContent = '₹' + totalPrice.toLocaleString('en-IN') + ' (' + nights + ' night' + (nights > 1 ? 's' : '') + ')';
+                }
+            }
+        }
+
+        checkInInput.addEventListener('change', calculatePrice);
+        checkOutInput.addEventListener('change', calculatePrice);
+    });
+</script>

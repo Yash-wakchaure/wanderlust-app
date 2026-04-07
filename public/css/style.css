@@ -1,7 +1,7 @@
 
 body {
     font-family: "Plus Jakarta Sans", sans-serif !important;
-    display: felx;
+    display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
@@ -9,6 +9,38 @@ body {
 .container{
     flex: 1;
 }
+#filters {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    padding: 0.5rem 0;
+    gap: 0.8rem;
+}
+#filters::-webkit-scrollbar {
+    width: 0; /* Hide scrollbar for WebKit */
+    height: 0;
+}
+#filters {
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+}
+#filters .filter {
+    flex: 0 0 auto;
+    margin-top: 0.75rem;
+    text-align: center;
+    opacity: 0.7;
+}
+#filters .filter:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+@media (min-width: 900px) {
+    #filters { flex-wrap: wrap; overflow-x: visible; }
+}
+
 .navbar{
     height: 4.5rem;
     background-color: white;
@@ -54,6 +86,7 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-items: space-evenly;
+    margin-top: auto;
 }
 
 /* cards */

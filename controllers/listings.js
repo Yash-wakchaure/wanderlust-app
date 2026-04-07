@@ -7,8 +7,23 @@ const Listing = require("../models/listing");
 
 
 module.exports.index = async (req, res) =>{
-    const allListings = await Listing.find();
-    return res.render("listings/index.ejs", {allListings}); 
+    let allListings;
+    let noResultsMessage = null;
+    if (req.query.search) {
+        const searchTerm = req.query.search;
+        allListings = await Listing.find({
+            $or: [
+                { location: { $regex: searchTerm, $options: 'i' } },
+                { country: { $regex: searchTerm, $options: 'i' } }
+            ]
+        });
+        if (allListings.length === 0) {
+            noResultsMessage = `No listings found for "${searchTerm}". The location you are searching for is not available.`;
+        }
+    } else {
+        allListings = await Listing.find();
+    }
+    return res.render("listings/index.ejs", {allListings, noResultsMessage}); 
 };
 
 module.exports.renderNewForm = (req, res) =>{
@@ -30,7 +45,7 @@ module.exports.selectCategory =  async(req, res, next) =>{
             const category = decodeURIComponent(req.params.category);
             const allListings = await Listing.find({category: {$regex: `^${category}$`, $options:"i"}});
             //    console.log(category);
-            return res.render("listings/index", {allListings, category});
+            return res.render("listings/index", {allListings, category, noResultsMessage: null});
       } catch(err){
             next(err);
       }  
