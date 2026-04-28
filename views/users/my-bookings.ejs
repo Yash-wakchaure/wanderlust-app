@@ -117,15 +117,19 @@
                     <% bookings.forEach(booking => { %>
                         <div class="col-lg-6">
                             <div class="card booking-card">
-                                <% if(booking.listing.image) { %>
+                                <% if(booking.listing && booking.listing.image) { %>
                                     <img src="<%= booking.listing.image.url %>" class="card-img-top" alt="<%= booking.listing.title %>">
                                 <% } %>
                                 <div class="booking-card-body">
-                                    <h5>
-                                        <a href="/listings/<%= booking.listing._id %>" class="text-decoration-none text-dark">
-                                            <%= booking.listing.title %>
-                                        </a>
-                                    </h5>
+                                    <% if (booking.listing) { %>
+                                        <h5>
+                                            <a href="/listings/<%= booking.listing._id %>" class="text-decoration-none text-dark">
+                                                <%= booking.listing.title %>
+                                            </a>
+                                        </h5>
+                                    <% } else { %>
+                                        <h5 class="text-muted">Listing unavailable</h5>
+                                    <% } %>
 
                                     <div class="booking-details">
                                         <div><strong>Check-In:</strong> <%= new Date(booking.checkInDate).toLocaleDateString('en-IN') %></div>
@@ -145,7 +149,7 @@
                                         <% } %>
                                     </div>
 
-                                    <% if(!isPastBooking) { %>
+                                    <% if(!isPastBooking && booking.listing) { %>
                                         <div class="booking-actions">
                                             <form method="POST" action="/listings/<%= booking.listing._id %>/bookings/<%= booking._id %>?_method=DELETE">
                                                 <button type="submit" class="btn-cancel-booking" onclick="return confirm('Cancel this booking?')">Cancel Booking</button>

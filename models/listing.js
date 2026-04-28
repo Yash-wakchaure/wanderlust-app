@@ -18,6 +18,16 @@ const listingSchema = new Schema({
     price:Number,
     location:String,
     country:String,
+    bedrooms:{
+        type:Number,
+        default:1,
+        min:1,
+    },
+    beds:{
+        type:Number,
+        default:1,
+        min:1,
+    },
     reviews:[
         {
             type:Schema.Types.ObjectId,

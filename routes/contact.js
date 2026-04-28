@@ -8,5 +8,8 @@ const wrapAsync = require("../utils/wrapAsync.js");
 router.get("/listings/:id/contact", isLoggedIn, wrapAsync(contactController.renderContactForm));
 // Handle contact form submission
 router.post("/listings/:id/contact", isLoggedIn, wrapAsync(contactController.sendContact));
+router.get("/owner/messages", isLoggedIn, wrapAsync(contactController.ownerInbox));
+router.get("/owner/messages/:contactId/reply", isLoggedIn, wrapAsync(contactController.renderReplyForm));
+router.post("/owner/messages/:contactId/reply", isLoggedIn, wrapAsync(contactController.sendReply));
 
 module.exports = router;

@@ -1,0 +1,59 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .reply-page {
+        background: linear-gradient(135deg, #f8fafc 0%, #fff7ed 100%);
+        padding: 3rem 0;
+    }
+
+    .reply-wrapper {
+        background: white;
+        border-radius: 22px;
+        padding: 2rem;
+        box-shadow: 0 22px 45px rgba(0,0,0,0.08);
+    }
+
+    .reply-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 1.25rem;
+    }
+
+    .reply-meta {
+        background: #fffaf5;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        margin-bottom: 1.25rem;
+        line-height: 1.8;
+    }
+</style>
+
+<div class="reply-page">
+    <div class="container">
+        <div class="reply-wrapper col-lg-8 mx-auto">
+            <h1 class="reply-title">Reply to Guest</h1>
+
+            <div class="reply-meta">
+                <div><strong>Listing:</strong> <%= contact.listing?.title || "Listing unavailable" %></div>
+                <div><strong>Guest Name:</strong> <%= contact.name %></div>
+                <div><strong>Guest Email:</strong> <%= contact.email %></div>
+            </div>
+
+            <form action="/owner/messages/<%= contact._id %>/reply" method="POST">
+                <div class="mb-3">
+                    <label for="replyMessage" class="form-label">Your Reply</label>
+                    <textarea
+                        class="form-control"
+                        id="replyMessage"
+                        name="replyMessage"
+                        rows="8"
+                        required
+                    ><%= contact.replyMessage || "" %></textarea>
+                </div>
+                <button type="submit" class="btn btn-dark">Send Reply</button>
+                <a href="/owner/messages" class="btn btn-secondary ms-2">Back</a>
+            </form>
+        </div>
+    </div>
+</div>

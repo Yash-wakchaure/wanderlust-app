@@ -11,6 +11,7 @@
       <p class="card-text">Owned By <i><%= listing.owner.username %></i></p>
       <p class="card-text"> <%= listing.description %> </p>
       <p class="card-text">Category:<%= listing.category %> </p>
+      <p class="card-text"><%= listing.bedrooms || 1 %> bedrooms · <%= listing.beds || 1 %> beds</p>
       <p class="card-text"> &#8377; <b><%= listing.price?.toLocaleString("en-IN") || "N/A" %>/</b> Day</p>
       <p class="card-text"> <i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %></p>   
       <!-- <p class="card-text"> <%= listing.country %></p> -->

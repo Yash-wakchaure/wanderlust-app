@@ -2,6 +2,63 @@
 <div class="row mt-3">
     <div class="col-8 offset-2">
 <body>
+    <style>
+        .stay-details-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 1.25rem;
+            padding: 0.5rem 1.25rem;
+            background: #fff;
+        }
+
+        .stay-stepper-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.1rem 0;
+            border-bottom: 1px solid #ececec;
+        }
+
+        .stay-stepper-row:last-child {
+            border-bottom: none;
+        }
+
+        .stay-stepper-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #222;
+        }
+
+        .stay-stepper-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .stay-stepper-btn {
+            width: 2.35rem;
+            height: 2.35rem;
+            border: none;
+            border-radius: 999px;
+            background: #f2f2f2;
+            color: #222;
+            font-size: 1.35rem;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stay-stepper-btn:hover {
+            background: #e7e7e7;
+        }
+
+        .stay-stepper-value {
+            min-width: 1.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+    </style>
     
     <h3>Create new Listing</h3>
     <form method="post" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data" >
@@ -43,6 +100,31 @@
             <label for="location" class="form-label">Location</label>
             <input type="text" name="listing[location]" placeholder="Pune, Maharatra" class="form-control" required>
             <div class="invalid-feedback">Location name should be valid</div>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Stay Details</label>
+            <div class="stay-details-card">
+                <div class="stay-stepper-row">
+                    <span class="stay-stepper-label">Bedrooms</span>
+                    <div class="stay-stepper-controls">
+                        <button type="button" class="stay-stepper-btn" data-stepper="bedrooms" data-action="decrement">-</button>
+                        <span class="stay-stepper-value" data-display-for="bedrooms">1</span>
+                        <button type="button" class="stay-stepper-btn" data-stepper="bedrooms" data-action="increment">+</button>
+                    </div>
+                    <input type="hidden" name="listing[bedrooms]" id="bedrooms" value="1">
+                </div>
+
+                <div class="stay-stepper-row">
+                    <span class="stay-stepper-label">Beds</span>
+                    <div class="stay-stepper-controls">
+                        <button type="button" class="stay-stepper-btn" data-stepper="beds" data-action="decrement">-</button>
+                        <span class="stay-stepper-value" data-display-for="beds">1</span>
+                        <button type="button" class="stay-stepper-btn" data-stepper="beds" data-action="increment">+</button>
+                    </div>
+                    <input type="hidden" name="listing[beds]" id="beds" value="1">
+                </div>
+            </div>
         </div>
 
         <div class="mb-3">
@@ -120,6 +202,20 @@
                     }, 2000);
                 });
             }
+
+            document.querySelectorAll('[data-stepper]').forEach((button) => {
+                button.addEventListener('click', function () {
+                    const field = this.dataset.stepper;
+                    const action = this.dataset.action;
+                    const input = document.getElementById(field);
+                    const display = document.querySelector(`[data-display-for="${field}"]`);
+                    let value = Number(input.value) || 1;
+
+                    value = action === 'increment' ? value + 1 : Math.max(1, value - 1);
+                    input.value = value;
+                    display.textContent = value;
+                });
+            });
         });
     </script>
 </body>

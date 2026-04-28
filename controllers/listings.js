@@ -5,10 +5,57 @@ const Listing = require("../models/listing");
 
 // const axios = require("axios");
 
+const formatLocationLabel = (location = "") => {
+    return location
+        .split(",")
+        .map((part) => part.trim())
+        .filter(Boolean)
+        .join(", ");
+};
+
+const getLocationGroupKey = (location = "") => {
+    return formatLocationLabel(location).toLowerCase();
+};
+
+const buildPopularSections = (allListings) => {
+    const groupedListings = new Map();
+
+    for (const listing of allListings) {
+        const locationName = formatLocationLabel(listing.location);
+        const locationKey = getLocationGroupKey(listing.location);
+
+        if (!locationName || !locationKey) continue;
+
+        if (!groupedListings.has(locationKey)) {
+            groupedListings.set(locationKey, {
+                location: locationName,
+                listings: [],
+            });
+        }
+
+        groupedListings.get(locationKey).listings.push(listing);
+    }
+
+    return Array.from(groupedListings.values())
+        .map(({ location, listings }) => ({
+            location,
+            listings: listings.slice(0, 8),
+            totalListings: listings.length,
+        }))
+        .sort((a, b) => {
+            if (b.totalListings !== a.totalListings) {
+                return b.totalListings - a.totalListings;
+            }
+
+            return a.location.localeCompare(b.location);
+        });
+};
+
 
 module.exports.index = async (req, res) =>{
     let allListings;
     let noResultsMessage = null;
+    let popularSections = [];
     if (req.query.search) {
         const searchTerm = req.query.search;
         allListings = await Listing.find({
@@ -22,8 +69,9 @@ module.exports.index = async (req, res) =>{
         }
     } else {
         allListings = await Listing.find();
+        popularSections = buildPopularSections(allListings);
     }
-    return res.render("listings/index.ejs", {allListings, noResultsMessage}); 
+    return res.render("listings/index.ejs", {allListings, noResultsMessage, popularSections}); 
 };
 
 module.exports.renderNewForm = (req, res) =>{
@@ -45,14 +93,13 @@ module.exports.selectCategory =  async(req, res, next) =>{
             const category = decodeURIComponent(req.params.category);
             const allListings = await Listing.find({category: {$regex: `^${category}$`, $options:"i"}});
             //    console.log(category);
-            return res.render("listings/index", {allListings, category, noResultsMessage: null});
+            return res.render("listings/index", {allListings, category, noResultsMessage: null, popularSections: []});
       } catch(err){
             next(err);
       }  
 }
 
 module.exports.creatListing = async(req, res)=>{
-
     let url = req.file.path;
     let filename = req.file.filename;
     const newListing = new Listing(req.body.listing);    
@@ -80,7 +127,7 @@ module.exports.updateListing = async (req, res) => {
   let { id } = req.params;
   let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
 
-   if(typeof req.file !== undefined){ 
+   if (req.file) { 
         let url = req.file.path;
         let filename = req.file.filename;
         listing.image = {url, filename};

@@ -158,7 +158,9 @@ module.exports.userBookings = async (req, res) => {
             status: { $ne: "cancelled" }
         }).populate("listing", "title image price location").sort({ checkInDate: -1 });
 
-        res.render("users/my-bookings", { bookings });
+        const validBookings = bookings.filter((booking) => booking.listing);
+
+        res.render("users/my-bookings", { bookings: validBookings });
     } catch (err) {
         req.flash("error", "Error loading bookings");
         res.redirect("/listings");

@@ -53,6 +53,111 @@
       text-decoration: none;
       color: black;
      }
+
+     .popular-section {
+      margin-top: 2.25rem;
+     }
+
+     .popular-section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+     }
+
+     .popular-section-title {
+      font-size: 1.70rem;
+      font-weight: 700;
+      color: #222;
+      margin: 0;
+     }
+
+     .popular-section-arrow {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      background: #f2f2f2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #222;
+      font-size: 0.95rem;
+     }
+
+     .popular-section-row {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scroll-behavior: smooth;
+     }
+
+     .popular-section-row::-webkit-scrollbar {
+      height: 8px;
+     }
+
+     .popular-section-row::-webkit-scrollbar-thumb {
+      background: #d9d9d9;
+      border-radius: 999px;
+     }
+
+     .popular-card-link {
+      text-decoration: none;
+      color: inherit;
+      flex: 0 0 18rem;
+     }
+
+     .popular-card {
+      border: none;
+      background: transparent;
+     }
+
+     .popular-card .card-img-top {
+      border-radius: 1.4rem;
+      object-fit: cover;
+      height: 15rem;
+     }
+
+     .popular-card .card-body {
+      padding: 0.85rem 0.2rem 0;
+     }
+
+     .popular-card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 0.25rem;
+     }
+
+     .popular-card-meta {
+      font-size: 1rem;
+      color: #6b7280;
+      margin-bottom: 0.2rem;
+     }
+
+     .popular-card-price {
+      font-size: 1rem;
+      color: #222;
+      margin-bottom: 0;
+     }
+
+     .popular-card-price strong {
+      text-decoration: underline;
+     }
+
+     @media (max-width: 768px) {
+      .popular-section-title {
+        font-size: 1rem;
+      }
+
+      .popular-card-link {
+        flex-basis: 15.5rem;
+      }
+
+      .popular-card .card-img-top {
+        height: 13rem;
+      }
+     }
      
     </style>
 
@@ -120,6 +225,37 @@
       </div>
     </div>
 
+<% if (popularSections && popularSections.length > 0) { %>
+  <% for (let section of popularSections) { %>
+    <section class="popular-section">
+      <div class="popular-section-header">
+        <h3 class="popular-section-title">Popular homes in <%= section.location %></h3>
+        <span class="popular-section-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+      </div>
+      <div class="popular-section-row">
+        <% for (let listing of section.listings) { %>
+          <a href="/listings/<%= listing._id %>" class="popular-card-link">
+            <div class="card popular-card">
+              <img
+                src="<%= listing.image.url %>"
+                class="card-img-top"
+                alt="listing_image"
+              />
+              <div class="card-body">
+                <p class="popular-card-title"><%= listing.title %></p>
+                <p class="popular-card-meta"><%= listing.bedrooms || 1 %> bedrooms · <%= listing.beds || 1 %> beds</p>
+                <p class="popular-card-price">
+                  <strong>&#8377;<%= listing.price?.toLocaleString("en-IN") || "N/A" %></strong> / Day
+                  <i class="tax-info">&nbsp; &nbsp; +GST 18%</i>
+                </p>
+              </div>
+            </div>
+          </a>
+        <% } %>
+      </div>
+    </section>
+  <% } %>
+<% } else { %>
 <div class="row row-cols-lg-4 row-cols-md-2 row-cols-sm-1 mt-3">
   <%   for(let listing of allListings){%>
     <a href="/listings/<%= listing._id %>" class="listing-link">
@@ -134,11 +270,13 @@
     <div class="card-body">
       <p class="card-text">
         <b><%=listing.title %></b><br>
+        <span class="text-muted"><%= listing.bedrooms || 1 %> bedrooms · <%= listing.beds || 1 %> beds</span><br>
         &#8377; <%= listing.price?.toLocaleString("en-IN") || "N/A" %>/Day
         <i class="tax-info">&nbsp; &nbsp; +GST 18%</i>
       </p>
     </div>
  </div>
+<% } %>
  </a>
  <% } %>
  </div>
